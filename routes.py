@@ -73,7 +73,7 @@ def my_call_logger(gatekeeper, request, response, exception, client_calls):
 my_gatekeeper = partial(
     GateKeeper,
     lru_cache=True,
-    invalid=enforcer,
+    disallowed_client_method=enforcer,
     post_handler_hook=my_call_logger
 )
 # //////////////////////////////////////////////////////////////
@@ -88,12 +88,12 @@ routes = []
 get_contests_handler = my_gatekeeper(
     name="GET_contests",
     handler=ContestsHandler,
+    response_checker=AllowedStatus('422', '402', '201'),
     clients=clients,
-    allowed_methods=[
+    allowed_client_methods=[
         clients.sport_data.java_call_1,
         clients.game_data.java_call_2
-    ],
-    response_checker=AllowedStatus('422', '402', '201')
+    ]
 )
 
 routes.append(
@@ -110,11 +110,11 @@ get_contest_handler = my_gatekeeper(
     handler=ContestHandler,
     path_handler=PathHandler('fixture_list_id', 'contest_id'),
     query_handler=QueryHandler('foo'),
+    response_checker=AllowedStatus('422', '402', '201'),
     clients=clients,
-    allowed_methods=[
+    allowed_client_methods=[
         clients.sport_data.java_call_2
-    ],
-    response_checker=AllowedStatus('422', '402', '201')
+    ]
 )
 
 routes.append(

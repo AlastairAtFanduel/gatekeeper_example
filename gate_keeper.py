@@ -11,7 +11,9 @@ PathHandler = basic_thing_handler
 QueryHandler = basic_thing_handler
 
 
-def AllowedStatus(*allowed_status):
+class AllowedStatus(object):
+    def (*allowed_status):
+        pass
     def allowed_status(response):
         return response.status in allowed_status
     return allowed_status
@@ -57,25 +59,26 @@ class GateKeeper(object):
         handler,
         path_handler=None,
         query_handler=None,
+        response_checker=None,
+        post_handler_hook=None,
         clients=None,
         allowed_methods=None,
-        response_checker=None,
+        disallowed_client_method=None,
         lru_cache=True,
-        invalid=None,
-        post_handler_hook=None
     ):
         self.handler = handler
         self.path_handler = path_handler
         self.query_handler = query_handler
 
-        # ToDo wrap clients
         self.clients = clients
         self.allowed_methods = allowed_methods
-        self.cache = cache
-
-        #
-        self.allowed_responses = allowed_responses
         self.invalid = validator
+        
+        self.lru_cache = lru_cache
+        self.allowed_responses = allowed_responses
+        
+
+
         self.recorder = recorder
 
     def __call__(self, request, *path_params):
@@ -85,12 +88,19 @@ class GateKeeper(object):
             path_params = None
 
         if self.query_handler:
-            query_params = 12 #Todo
+            query_params = 12 #Todo werkzeug magic
         else:
             query_params = None
 
+        with self as clients:
+            ret = self.handler(request, path_params, query_params, clients)
 
-        self.handler(request)
+
+    def __enter__(self):
+        return ClientRecorder(clients)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
 
     def __doc__(self):
         pass
@@ -101,4 +111,30 @@ class GateKeeper(object):
     def query_params(self):
         pass
 
-    def last_call
+    def last_call(self):
+        pass
+
+
+
+def log_call(stack):
+    def wrap(func):
+        def inner(*args, **args):
+            ret = None
+            try:
+                ret = func(*args, **kwargs)
+            except Exception as e:
+                pass
+            stack.append(func, args, kwargs, ret, e)
+    return wrap
+
+
+
+class ClientRecorder(object):
+    def __init__(self, clients, allowed_methods):
+        self.clients = clients
+        self.calls = []
+        self.logger = log_call(self.calls)
+        self.allowed_methods = allowed_methods
+
+    def __getattr__(self, attr):
+        return self.logger(getattr(self.clients, attr))
