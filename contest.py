@@ -16,6 +16,7 @@ def FakeManager(object):
         return contests, fixture_lists
 
     def get_contest(self):
+        print("CALLED get_contest")
         contest = self._clients.sport_data.java_call_2("aaa")
         return contest
 
@@ -27,6 +28,7 @@ def FakeManager(object):
 def ContestsHandler(request, path_params, query_params, clients):
     contests_manager = FakeManager(clients)
 
+    print("ContestsHandler: FIRST CALL get_contests")
     contests, fixture_lists = contests_manager.get_contests()
 
     data = {
@@ -42,11 +44,14 @@ def ContestHandler(request, path_params, query_params, clients):
     fixture_list_id = path_params.fixture_list_id
     contest_id = path_params.contest_id
     foo = query_params.foo
-    print("ContestHandler", fixture_list_id, contest_id, foo)
+    print("ContestHandler: ", fixture_list_id, contest_id, foo)
 
+    print("ContestHandler: FIRST CALL get_contest")
     contest = contest_manager.get_contest()
-
-    # contest_manager.call_unexpected_thing
+    print("ContestHandler: SECOND CALL get_contest")
+    contest = contest_manager.get_contest()    # To show lru caching
+    print("ContestHandler: THIRD CALL call_unexpected_thing")
+    contest_manager.call_unexpected_thing()
 
     data = {
         'contest': contest,

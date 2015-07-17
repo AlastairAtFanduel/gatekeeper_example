@@ -35,6 +35,7 @@ It is a handler wrapper that provides:
         .last_call also stores this information for the last call.
             So any pdb can access the external/c3pyo call log for the current request.
 
+# P.S. Route and Gatekeeper could be merged.
 """
 
 from contest import ContestsHandler, ContestHandler
@@ -43,13 +44,17 @@ from gate_keeper import GateKeeper, PathHandler, QueryHandler
 from clients import clients
 
 
+ROUTES = []
+
+
 class Route(object):
-    # Bypassing some of werkzeug for this demo.
-    pass
-
-# ROUTES
-
-routes = []
+    """
+    Used to wrap werkzeugs Rule object and associate a rule with an endpoint.
+    """
+    def __init__(self, path, name=None, endpoint=None):
+        self.path = path
+        self.name = name
+        self.endpoint = endpoint
 
 # GET CONTESTS
 get_contests_handler = GateKeeper(
@@ -63,7 +68,7 @@ get_contests_handler = GateKeeper(
     allowed_status_codes=('422', '402', '201')
 )
 
-routes.append(
+ROUTES.append(
     Route(
         '/contests',
         name='contests',
@@ -84,7 +89,7 @@ get_contest_handler = GateKeeper(
     allowed_status_codes=('422', '402', '201')
 )
 
-routes.append(
+ROUTES.append(
     Route(
         '/contests/<numeric_string:fixture_list_id>-<numeric_string:contest_id>',
         name='contest',
@@ -94,6 +99,7 @@ routes.append(
 
 # ToDo:
 
+# Merge Route and GateKeeper
 # ToDo GateKeeper could return a route.  Some duplication. path params etc.
 # GateKeeper could do with a bit of seperation.
 # allowed_status_codes maybe make more powerfollow check sub error codes etc.

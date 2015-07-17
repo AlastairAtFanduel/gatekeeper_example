@@ -194,26 +194,22 @@ PathHandler = basic_thing_handler
 QueryHandler = basic_thing_handler
 
 
-def enforcer(traceback, method, method_name, params):
+def enforcer(client_call_info):
     """Placeholder This really needs a defined interface"""
-    print("An unallowed method was called happened")
-    print(traceback)
-    raise AssertionError("Bad Coder!")
+    call, args, kwargs, ret, error = client_call_info
+    print("enforcer: Illegal call to ", client_call_info.call.__name__)
 
 
 def my_call_logger(handler_call_info, client_call_infos):
     # Print and PDB
-    print("Logging the last call")
     handler, handler_args, handler_kwargs, ret, error = handler_call_info
     clients, request, path_params, query_params = handler_args
-    print("Handler of name={} was called with".format(handler.name))
+    print("my_call_logger: Handler of name={} was called".format(handler.name))
     print(request, ret, error)
-    print("It used the following calls")
+    print("my_call_logger: It used the following calls")
 
     for client_method, client_args, client_kwargs, client_ret, client_error in client_call_infos:
-        print(client_method, client_args, client_kwargs, client_ret, client_error)
-    import pdb
-    pdb.set_trace()
+        print("\t -> client call", client_method)
 # //////////////////////////////////////////////////////////////
 
 
