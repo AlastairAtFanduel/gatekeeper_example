@@ -1,11 +1,10 @@
-#<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-#---
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # Fake Stuff IGNORE
-#---
 
 # In this example the managers are instantiated inside the handlers and passed the clients
 # This is just to make the implementation simple for now.
 # Implementation could be split out much more.
+
 
 def FakeManager(object):
     def __init__(self, clients):
@@ -42,12 +41,12 @@ def ContestHandler(request, path_params, query_params, clients):
 
     fixture_list_id = path_params.fixture_list_id
     contest_id = path_params.contest_id
-
     foo = query_params.foo
+    print("ContestHandler", fixture_list_id, contest_id, foo)
 
     contest = contest_manager.get_contest()
-    
-    #contest_manager.call_unexpected_thing
+
+    # contest_manager.call_unexpected_thing
 
     data = {
         'contest': contest,
@@ -55,4 +54,4 @@ def ContestHandler(request, path_params, query_params, clients):
     return data
 
 
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

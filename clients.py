@@ -2,6 +2,9 @@
 Fake c3pyo clients :)
 """
 
+from collections import namedtuple
+
+
 class FakeGameDataC3pyo(object):
     def java_call_1(self, x):
         return x
