@@ -43,15 +43,18 @@ def ContestHandler(request, path_params, query_params, clients):
 
     fixture_list_id = path_params.fixture_list_id
     contest_id = path_params.contest_id
-    foo = query_params.foo
-    print("ContestHandler: ", fixture_list_id, contest_id, foo)
+    choice = query_params.foo
+    print("ContestHandler: ", fixture_list_id, contest_id, choice)
 
-    print("ContestHandler: FIRST CALL get_contest")
-    contest = contest_manager.get_contest()
-    print("ContestHandler: SECOND CALL get_contest")
-    contest = contest_manager.get_contest()    # To show lru caching
-    print("ContestHandler: THIRD CALL call_unexpected_thing")
-    contest_manager.call_unexpected_thing()
+    if choice:
+        print("ContestHandler: FIRST CALL get_contest")
+        contest = contest_manager.get_contest()
+        print("ContestHandler: SECOND CALL get_contest")
+        contest = contest_manager.get_contest()    # To show lru caching
+        print("ContestHandler: THIRD CALL call_unexpected_thing")
+        contest_manager.call_unexpected_thing()
+    else:
+        contest = contest_manager.get_contests()
 
     data = {
         'contest': contest,

@@ -70,6 +70,7 @@ class GateKeeper(object):
         disallowed_status_code_hook=None,   # To support debuging/enforcement.
         disallowed_method_hook=None,        # To support debuging/enforcement.
         lru_cache=True,                # While we are here.
+        pre_handler_hook=None,              # Not sure why yet.
         post_handler_hook=None,             # Support graphing calls etc.
     ):
         self.handler = handler
@@ -116,12 +117,21 @@ class GateKeeper(object):
         return clients
 
     def __call__(self, request, *path_params):
+        # Not used at all
+        if self.pre_handler_hook:
+            args = (request) + path_params
+            call_info = call_info_nt(self.handler, args, None, None, None)
+            self.pre_handler_hook(call_info)
+
+        # set params
         path_params = self.path_handler(path_params)
         query_params = self.make_query_model(request)
 
+        # Maybe wrap clients
         client_call_infos = []
         clients = self.get_clients(client_call_infos)
 
+        # Service the request.
         error = None
         ret = None
         args = (clients, request, path_params, query_params)
@@ -199,17 +209,23 @@ def enforcer(client_call_info):
     call, args, kwargs, ret, error = client_call_info
     print("enforcer: Illegal call to ", client_call_info.call.__name__)
 
+DO_SOMETHING_ELSE = None
+
 
 def my_call_logger(handler_call_info, client_call_infos):
-    # Print and PDB
-    handler, handler_args, handler_kwargs, ret, error = handler_call_info
-    clients, request, path_params, query_params = handler_args
-    print("my_call_logger: Handler of name={} was called".format(handler.name))
-    print(request, ret, error)
-    print("my_call_logger: It used the following calls")
+    if DO_SOMETHING_ELSE:
+        DO_SOMETHING_ELSE(handler_call_info, client_call_infos)
+    else:
+        # Print
+        handler, handler_args, handler_kwargs, ret, error = handler_call_info
+        clients, request, path_params, query_params = handler_args
+        print("my_call_logger: Handler of name={} was called".format(handler.name))
+        print(request, ret, error)
+        print("my_call_logger: It used the following calls")
+        for client_method, client_args, client_kwargs, client_ret, client_error in client_call_infos:
+            print("\t -> client call", client_method)
 
-    for client_method, client_args, client_kwargs, client_ret, client_error in client_call_infos:
-        print("\t -> client call", client_method)
+
 # //////////////////////////////////////////////////////////////
 
 
