@@ -2,12 +2,7 @@
 # EXAMPLE
 ############################################
 
-#
-#
-#
-
-# get_contests_handler(Request())
-# get_contests_handler(Request())
+# INSPECTABILTY
 
 from routes import ROUTES
 
@@ -19,6 +14,9 @@ for route in ROUTES:
     print(route.endpoint.query_handler)
     print(route.endpoint.allowed_status_codes)
     print(route.endpoint.allowed_methods)
+
+
+# CALL LOGGING
 
 
 # Show call logging
@@ -58,7 +56,19 @@ def capture_all_calls(handler_call, client_calls):
     # This would just be a file or remote service, not stored in memory
     ALL_CALLS.append(handler_call, client_calls)
 
-gate_keeper.DO_SOMETHING_ELSE = capture_all_calls
+get_contest_handler.post_handler_hook = capture_all_calls
+
+
+# GET contest
+fixture_list_id = 1
+contest_id = 2
+request = build_request_obj(query_strings={'foo': False})
+for x in range(10):
+    ret = get_contest_handler(request, fixture_list_id, contest_id)
+
+request = build_request_obj(query_strings={'foo': True})
+for x in range(3):
+    ret = get_contest_handler(request, fixture_list_id, contest_id)
 
 
 def yield_call_data():
@@ -73,18 +83,6 @@ def yield_call_data():
             client_methods.append(call.__name__)
 
         yield call_name, query_params, client_methods
-
-# GET contest
-fixture_list_id = 1
-contest_id = 2
-request = build_request_obj(query_strings={'foo': False})
-for x in range(10):
-    ret = get_contest_handler(request, fixture_list_id, contest_id)
-
-request = build_request_obj(query_strings={'foo': True})
-for x in range(3):
-    ret = get_contest_handler(request, fixture_list_id, contest_id)
-
 
 for handler_name, query_params, client_methods in yield_call_data():
     print(handler_name, query_params, client_methods)

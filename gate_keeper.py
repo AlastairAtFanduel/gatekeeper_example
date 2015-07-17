@@ -209,21 +209,16 @@ def enforcer(client_call_info):
     call, args, kwargs, ret, error = client_call_info
     print("enforcer: Illegal call to ", client_call_info.call.__name__)
 
-DO_SOMETHING_ELSE = None
-
 
 def my_call_logger(handler_call_info, client_call_infos):
-    if DO_SOMETHING_ELSE:
-        DO_SOMETHING_ELSE(handler_call_info, client_call_infos)
-    else:
-        # Print
-        handler, handler_args, handler_kwargs, ret, error = handler_call_info
-        clients, request, path_params, query_params = handler_args
-        print("my_call_logger: Handler of name={} was called".format(handler.name))
-        print(request, ret, error)
-        print("my_call_logger: It used the following calls")
-        for client_method, client_args, client_kwargs, client_ret, client_error in client_call_infos:
-            print("\t -> client call", client_method)
+    # Print
+    handler, handler_args, handler_kwargs, ret, error = handler_call_info
+    clients, request, path_params, query_params = handler_args
+    print("my_call_logger: Handler of name={} was called".format(handler.name))
+    print(request, ret, error)
+    print("my_call_logger: It used the following calls")
+    for client_method, client_args, client_kwargs, client_ret, client_error in client_call_infos:
+        print("\t -> client call", client_method)
 
 
 # //////////////////////////////////////////////////////////////
