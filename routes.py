@@ -99,7 +99,7 @@ ROUTES.append(
             clients.game_data.java_call_2
         ),
         post_handler_hook=get_call_logger(),
-        lru_cache=__debug__
+        client_lru_cache=__debug__
     )
 )
 
@@ -120,6 +120,6 @@ ROUTES.append(
             clients.sport_data.java_call_2
         ),
         post_handler_hook=get_call_logger(),
-        lru_cache=__debug__
+        client_lru_cache=__debug__
     )
 )

@@ -1,5 +1,5 @@
 from collections import namedtuple
-import functools
+from lru_cache import lru_cache
 import inspect
 
 from qualname import qualname
@@ -76,7 +76,7 @@ class Route(object):
         query_handler=None,                 # Needs to be inspectable
         status_codes_gatekeeper=None,       # Needs to be inspectable
         client_methods_gatekeeper=None,     # Needs to be inspectable
-        lru_cache=False,                # While we are here.
+        client_lru_cache=False,                # While we are here.
         pre_handler_hook=None,              # Not sure why yet.
         post_handler_hook=None,             # Support graphing calls etc.
     ):
@@ -92,7 +92,7 @@ class Route(object):
 
         self.client_methods_gatekeeper = client_methods_gatekeeper
         self.status_codes_gatekeeper = status_codes_gatekeeper
-        self.lru_cache = lru_cache
+        self.client_lru_cache = client_lru_cache
         self.pre_handler_hook = pre_handler_hook
         self.post_handler_hook = post_handler_hook
 
@@ -133,9 +133,9 @@ class Route(object):
 
         # Maybe wrap clients
         client_call_infos = []
-        if self.client_methods_gatekeeper or self.lru_cache:
+        if self.client_methods_gatekeeper or self.client_lru_cache:
             clients = wrap_clients(
-                client_call_infos, client_call_infos, self.client_methods_gatekeeper, self.lru_cache
+                self.raw_clients, client_call_infos, self.client_methods_gatekeeper, self.client_lru_cache
             )
         else:
             clients = self.raw_clients
@@ -226,17 +226,7 @@ class Route(object):
         return self.handler.__doc__
 
 
-def wrap_clients(clients, call_array, client_methods_gatekeeper, lru_cache):
-    clients = clients_wrapper(
-        clients,
-        call_array,
-        client_methods_gatekeeper,
-        lru_cache,
-    )
-    return clients
-
-
-def clients_wrapper(clients, call_store, client_methods_gatekeeper, lru_cache):
+def wrap_clients(clients, call_store, client_methods_gatekeeper, client_lru_cache):
     # Save the client calls.
     assert isinstance(call_store, list)
 
@@ -244,11 +234,10 @@ def clients_wrapper(clients, call_store, client_methods_gatekeeper, lru_cache):
         def __init__(self, client):
             self.client = client
             self.method_proxies = {}
-
-            for method in inspect.getmembers(client, inspect.ismethod):
-                if not method.__name__.startwith('_'):
-                    if lru_cache:
-                        new_method = functools.lru_cache(method)
+            for name, method in inspect.getmembers(client, inspect.ismethod):
+                if not name.startswith('_'):
+                    if client_lru_cache:
+                        new_method = lru_cache(method)
                     if client_methods_gatekeeper:
                         new_method = client_meth_wrapper(new_method)
                     self.method_proxies[method.__name__] = new_method
@@ -277,8 +266,9 @@ def clients_wrapper(clients, call_store, client_methods_gatekeeper, lru_cache):
 
     client_proxies = []
     for client in clients:
+        print(client)
         client_proxies.append(ClientProxy(client))
-
+    print(client_proxies, clients)
     return clients_nt(*client_proxies)
 
 
