@@ -93,7 +93,7 @@ ROUTES.append(
         verb='GET',
         handler=ContestsHandler,
         clients=clients,
-        document=ContestsDocument,
+        document=ContestsDocument(),
         status_codes_gatekeeper=status_code_gatekeeper('422', '402', '201'),
         client_methods_gatekeeper=client_gatekeeper(
             clients.sport_data.java_call_1,
@@ -113,7 +113,7 @@ ROUTES.append(
         verb='GET',
         handler=ContestHandler,
         clients=clients,
-        document=ContestDocument,
+        document=ContestDocument(),
         path_handler=PathHandler('fixture_list_id', 'contest_id'),
         query_handler=QueryHandler({'foo': foo_handler}),
         status_codes_gatekeeper=status_code_gatekeeper('422', '402', '201'),

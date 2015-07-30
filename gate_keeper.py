@@ -148,7 +148,6 @@ class Route(object):
         try:
             ret = self.handler(*args)
         except Exception as error:
-            raise
             call_info = call_info_nt(self.handler, args, None, ret, error)
         else:
             call_info = call_info_nt(self.handler, args, None, ret, error)
@@ -250,7 +249,7 @@ def wrap_clients(clients, call_store, client_methods_gatekeeper, client_lru_cach
     def client_meth_wrapper(func):
         def inner(self, *args, **kwargs):
             call_info = call_info_nt(func, args, kwargs, None, None)
-            client_methods_gatekeeper(call_info)
+            client_methods_gatekeeper(qualname(func), call_info)
 
             ret = None
             error = None
@@ -313,7 +312,7 @@ class StatusCodeGateKeeper(object):
     def __init__(self, allowed):
         self.allowed = allowed
 
-    def __call__(self, status_code):
+    def __call__(self, status_code, client_call_info):
         if status_code not in self.allowed:
             print("Illegal status code", status_code)
 
@@ -322,7 +321,7 @@ class MethodGateKeeper(object):
     def __init__(self, allowed):
         self.allowed = allowed
 
-    def __call__(self, client_call_info):
+    def __call__(self, method_name, client_call_info):
         call, args, kwargs, ret, error = client_call_info
         if call not in self.allowed:
             print("enforcer: Illegal call to ", client_call_info.call.__name__)

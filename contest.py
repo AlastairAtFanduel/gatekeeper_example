@@ -4,6 +4,7 @@
 # In this example the managers are instantiated inside the handlers and passed the clients
 # This is just to make the implementation simple for now.
 # Implementation could be split out much more.
+from werkzeug.wrappers import Response
 
 from contest_managers import FakeManager
 
@@ -46,8 +47,9 @@ def ContestsHandler(clients, request, path_params, query_params, documenter):
         'contests': contests,
         'fixture_lists': fixture_lists,
     }
+    print("///////////", documenter)
     document = documenter(data)
-    return document
+    return Response(document, status=200)
 
 
 def ContestHandler(request, path_params, query_params, clients, documenter):
@@ -91,4 +93,4 @@ def ContestHandler(request, path_params, query_params, clients, documenter):
     }
 
     document = documenter(data)
-    return document
+    return Response(document, status=200)

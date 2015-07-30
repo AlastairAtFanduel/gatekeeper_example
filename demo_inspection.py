@@ -37,7 +37,7 @@ from routes import ROUTES
 import gate_keeper
 from werkzeug.datastructures import MultiDict
 from werkzeug.test import EnvironBuilder
-from werkzeug.wrappers import Request
+from werkzeug.wrappers import Request, Response
 
 def build_request_obj(query_strings):
     builder = EnvironBuilder(query_strings)      # query_string=)
