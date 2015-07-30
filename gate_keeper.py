@@ -140,12 +140,10 @@ class Route(object):
         else:
             clients = self.raw_clients
 
-        import pdb; pdb.set_trace()
-
         # Service the request.
         error = None
         ret = None
-        args = (clients, request, path_params, query_params)
+        args = (clients, request, path_params, query_params, self.document)
         try:
             ret = self.handler(*args)
         except Exception as error:

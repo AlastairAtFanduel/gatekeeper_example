@@ -70,8 +70,9 @@ def get_call_logger():
     else:
         def call_logger(handler_call_info, client_call_infos):
             handler, handler_args, handler_kwargs, ret, error = handler_call_info
-            clients, request, path_params, query_params = handler_args
-            print("my_call_logger: Handler of name={} was called".format(handler.name))
+            clients, request, path_params, query_params, documenter = handler_args
+            #import pdb; pdb.set_trace()
+            print("my_call_logger: Handler of name={} was called".format(handler.__name__))
             print(request, ret, error)
             print("my_call_logger: It used the following calls")
             for client_method, c_args, c_kwargs, c_ret, c_error in client_call_infos:
