@@ -50,6 +50,24 @@ def ContestsHandler(request, path_params, query_params, clients, documenter):
 
 
 def ContestHandler(request, path_params, query_params, clients, documenter):
+    """
+    The individual contest resource provides detailed information about the
+    contest, rules, associated fixtures and prize structures.
+
+    **Authentication required**: No
+
+    Responds with information about a contest, including sport, name, salary
+    cap, size, entry count, entry fee, total prize amount, prize breakdown,
+    fixtures, rules, start time.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        GET /contests/343434-2914582 HTTP/1.1
+        Host: api.fanduel.com
+        Accept: application/json
+    """
     contest_manager = FakeManager(clients)
 
     fixture_list_id = path_params.fixture_list_id

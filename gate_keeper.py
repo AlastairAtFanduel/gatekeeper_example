@@ -2,6 +2,8 @@ from collections import namedtuple
 import functools
 import inspect
 
+from qualname import qualname
+
 from clients import clients_nt
 
 from werkzeug.routing import Rule
@@ -180,6 +182,9 @@ class Route(object):
     def __dir__(self):
         # Only here to make demo simple
         return [
+            'path',
+            'name',
+            'verb',
             'path_params',
             'query_params',
             'allowed_client_methods',
@@ -191,15 +196,20 @@ class Route(object):
     # inspector stuff
     @property
     def path_params(self):
-        return self.path_handler.params
+        return self.path_handler.params if self.path_handler else []
 
     @property
     def query_params(self):
-        return self.query_handler.query_params.params
+        return self.query_handler.params if self.query_handler else []
 
     @property
     def allowed_client_methods(self):
-        return self.client_methods_gatekeeper.allowed
+        method_names = []
+        if self.client_methods_gatekeeper:
+            methods = self.client_methods_gatekeeper.allowed
+            for method in methods:
+                method_names.append(qualname(method))
+        return method_names
 
     @property
     def allowed_status_codes(self):

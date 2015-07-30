@@ -6,19 +6,28 @@
 
 from routes import ROUTES
 
-
+print(dir(ROUTES[0]))
 
 
 for route in ROUTES:
-    print()
-    print(route.path_params)
-    print(route.query_params)
-    print(route.endpoint.handler.__doc__)
-    print(route.endpoint.path_handler)
-    print(route.endpoint.query_handler)
-    print(route.endpoint.allowed_status_codes)
-    print(route.endpoint.allowed_methods)
+    print('-'*80)
+    #for item in dir(route):
+    #    print('{}={}'.format(item, getattr(route, item)))
 
+    print("path={}".format(route.path))
+    print("name={}".format(route.name))
+    print("verb={}".format(route.verb))
+    print("path_params={}".format(route.path_params))
+    print("query_params={}".format(route.query_params))
+    print("allowed_client_methods={}".format(route.allowed_client_methods))
+    print("allowed_status_codes={}".format(route.allowed_status_codes))
+    print("documents_doc={}".format(route.documents_doc))
+    print("handler_doc={}".format(route.handler_doc))
+
+
+import sys; sys.exit()
+
+# ############################################################################
 
 # CALL LOGGING
 
