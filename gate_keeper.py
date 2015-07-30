@@ -285,7 +285,8 @@ class PathHandler(object):
         return self.path_params
 
     def __call__(self, request, path_param_values):
-        return namedtuple('path_handler', self.path_params)(path_param_values)
+        print("meeoop",request, path_param_values)
+        return namedtuple('path_handler', self.path_params)(*path_param_values)
 
 
 class QueryHandler(object):
@@ -306,7 +307,7 @@ class QueryHandler(object):
                 value = query_handler(request, path_params)
                 values.append(value)
 
-        return namedtuple('query_handler', keys)(values)
+        return namedtuple('query_handler', keys)(*values)
 
 
 class StatusCodeGateKeeper(object):

@@ -19,7 +19,7 @@ class FakeManager(object):
         return contests, fixture_lists
 
     def get_contest(self):
-        print("CALLED get_contest")
+        print("FakeManager.get_contest: calling get_contest")
         contest = self._clients.sport_data.sport_data_java_call_2("aaa")
         return contest
 

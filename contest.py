@@ -10,7 +10,7 @@ from contest_managers import FakeManager
 
 
 def foo_handler(request, path_params):
-    return 'defaultvalue'
+    return request.args.get('foo')
 
 
 def ContestsHandler(clients, request, path_params, query_params, documenter):
@@ -48,7 +48,7 @@ def ContestsHandler(clients, request, path_params, query_params, documenter):
     return Response(document, status=200)
 
 
-def ContestHandler(request, path_params, query_params, clients, documenter):
+def ContestHandler(clients, request, path_params, query_params, documenter):
     """
     The individual contest resource provides detailed information about the
     contest, rules, associated fixtures and prize structures.
@@ -74,7 +74,7 @@ def ContestHandler(request, path_params, query_params, clients, documenter):
     choice = query_params.foo
     print("ContestHandler: ", fixture_list_id, contest_id, choice)
 
-    if choice:
+    if choice == "True":
         print("ContestHandler: FIRST CALL get_contest")
         contest = contest_manager.get_contest()
         print("ContestHandler: SECOND CALL get_contest")

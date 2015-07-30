@@ -72,7 +72,7 @@ def get_call_logger():
             handler, handler_args, handler_kwargs, ret, error = handler_call_info
             clients, request, path_params, query_params, documenter = handler_args
             print('*'*80 + " CALL LOGGER")
-            print("\t Handler of name={} was called with args {}".format(handler.__name__, path_params))
+            print("\t Handler of name={} was called with args {}, query_params={}".format(handler.__name__, path_params, query_params))
             #print(request, ret, error)
             print("\t Client calls")
             for client_method, c_args, c_kwargs, c_ret, c_error in client_call_infos:

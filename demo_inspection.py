@@ -25,14 +25,16 @@ for route in ROUTES:
     print("handler_doc={}".format(route.handler_doc))
 
 
-
-print(('='*80 + '\n')*3)
-
+#import sys; sys.exit()
 
 # ############################################################################
 
-# CALL LOGGING
-print("CALL LOGGING")
+contests_router = ROUTES[0]
+contest_router = ROUTES[1]
+
+# BASIC CALL LOGGING
+print(('='*80 + '\n')*3)
+print("BASIC CALL LOGGING")
 
 # Show call logging
 from routes import ROUTES
@@ -42,32 +44,49 @@ from werkzeug.test import EnvironBuilder
 from werkzeug.wrappers import Request, Response
 
 def build_request_obj(query_strings):
-    builder = EnvironBuilder(query_strings)      # query_string=)
+    print(query_strings)
+    builder = EnvironBuilder()      # query_string=)
     env = builder.get_environ()
     request = Request(env)
-    #request.args = MultiDict()
+    request.args = MultiDict(query_strings.items())
     return request
 
 
 # GET contests
-request = build_request_obj("foo")
+request = build_request_obj({})
 
-contests_router = ROUTES[0]
-contest_router = ROUTES[1]
+
 
 
 ret = contests_router(request)
 
+#import sys; sys.exit()
 
-import pdb; pdb.set_trace()
-import sys; sys.exit()
+
+# ############################################################################
+
+# CALL LOGGING WITH PARAMS
+print(('='*80 + '\n')*3)
+print("CALL LOGGING WITH PARAMS")
 
 # GET contest
 fixture_list_id = 1
 contest_id = 2
-request = build_request_obj(query_strings={'foo': False})
-ret = get_contest_handler(request, fixture_list_id, contest_id)
+request = build_request_obj(query_strings={'foo': "True"})
 
+
+ret = contest_router(request, fixture_list_id, contest_id)
+
+# CALL LOGGING WITH PARAMS
+print(('='*80 + '\n')*3)
+print("CALL LOGGING WITH PARAMS2")
+
+request = build_request_obj(query_strings={'foo': "False"})
+
+
+ret = contest_router(request, fixture_list_id, contest_id)
+
+import sys; sys.exit()
 
 ###########################################
 # CALL graph with querying
