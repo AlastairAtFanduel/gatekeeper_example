@@ -1,7 +1,7 @@
 
 class FakeManager(object):
     def __init__(self, clients):
-        self._clients = clients()
+        self._clients = clients
 
     def get_contests(self):
         contests = self._clients.sport_data.java_call_1("aaa")

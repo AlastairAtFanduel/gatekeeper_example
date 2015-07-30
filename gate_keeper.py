@@ -144,9 +144,11 @@ class Route(object):
         error = None
         ret = None
         args = (clients, request, path_params, query_params, self.document)
+        call_info = call_info_nt(self.handler, args, None, ret, error)
         try:
             ret = self.handler(*args)
         except Exception as error:
+            raise
             call_info = call_info_nt(self.handler, args, None, ret, error)
         else:
             call_info = call_info_nt(self.handler, args, None, ret, error)
