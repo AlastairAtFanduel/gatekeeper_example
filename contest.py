@@ -36,18 +36,14 @@ def ContestsHandler(clients, request, path_params, query_params, documenter):
         Vary: Accept
         Content-Type: application/json
     """
-    print(clients)
     contests_manager = FakeManager(clients)
 
-    print("ContestsHandler: FIRST CALL get_contests", contests_manager)
     contests, fixture_lists = contests_manager.get_contests()
-    print("erm")
 
     data = {
         'contests': contests,
         'fixture_lists': fixture_lists,
     }
-    print("///////////", documenter)
     document = documenter(data)
     return Response(document, status=200)
 

@@ -4,15 +4,25 @@ class FakeManager(object):
         self._clients = clients
 
     def get_contests(self):
-        contests = self._clients.sport_data.java_call_1("aaa")
-        fixture_lists = self._clients.game_data.java_call_2("bbb")
+        print("FakeManager.get_contests: calling sport_data_java_call_1")
+        contests = self._clients.sport_data.sport_data_java_call_1("aaa")
+
+        print("FakeManager.get_contests: calling sport_data_java_call_1")
+        contests = self._clients.sport_data.sport_data_java_call_1("aaa")
+
+        print("FakeManager.get_contests: calling sport_data_java_call_2")
+        self._clients.sport_data.sport_data_java_call_2("aaa")
+
+        print("FakeManager.get_contests: calling game_data_java_call_2")
+        fixture_lists = self._clients.game_data.game_data_java_call_2("bbb")
+
         return contests, fixture_lists
 
     def get_contest(self):
         print("CALLED get_contest")
-        contest = self._clients.sport_data.java_call_2("aaa")
+        contest = self._clients.sport_data.sport_data_java_call_2("aaa")
         return contest
 
     def call_unexpected_thing(self):
-        y = self._clients.game_data.java_call_1("bbb")
+        y = self._clients.game_data.game_data_java_call_1("bbb")
         return y

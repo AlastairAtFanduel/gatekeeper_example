@@ -6,21 +6,21 @@ from collections import namedtuple
 
 
 class FakeGameDataC3pyo(object):
-    def java_call_1(self, x):
+    def game_data_java_call_1(self, x):
         print("RAW call FakeGameDataC3pyo.java_call_1")
         return x
 
-    def java_call_2(self, x):
+    def game_data_java_call_2(self, x):
         print("RAW call FakeGameDataC3pyo.java_call_2")
         return x
 
 
 class FakeSportDataC3pyo(object):
-    def java_call_1(self, x):
+    def sport_data_java_call_1(self, x):
         print("RAW call FakeSportDataC3pyo.java_call_1")
         return x
 
-    def java_call_2(self, x):
+    def sport_data_java_call_2(self, x):
         print("RAW call FakeSportDataC3pyo.java_call_2")
         return x
 

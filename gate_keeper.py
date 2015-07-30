@@ -1,7 +1,7 @@
 from collections import namedtuple
 from lru_cache import lru_cache
 import inspect
-
+import functools
 from qualname import qualname
 
 from clients import clients_nt
@@ -233,22 +233,23 @@ def wrap_clients(clients, call_store, client_methods_gatekeeper, client_lru_cach
         def __init__(self, client):
             self.client = client
             self.method_proxies = {}
-            for name, method in inspect.getmembers(client, inspect.ismethod):
+            for name, orig_method in inspect.getmembers(client, inspect.ismethod):
                 if not name.startswith('_'):
+                    new_method = orig_method
                     if client_lru_cache:
-                        new_method = lru_cache()(method)
+                        new_method = lru_cache()(new_method)
                     if client_methods_gatekeeper:
-                        new_method = client_meth_wrapper(new_method)
-                    self.method_proxies[method.__name__] = new_method
+                        new_method = client_meth_wrapper(new_method, orig_method)
+                    self.method_proxies[orig_method.__name__] = new_method
 
         def __getattr__(self, thing):
             if thing in self.method_proxies:
                 return self.method_proxies[thing]
             return getattr(self.method_proxies, thing)
 
-    def client_meth_wrapper(func):
+    def client_meth_wrapper(func, orig_method):
         def inner(self, *args, **kwargs):
-            call_info = call_info_nt(func, args, kwargs, None, None)
+            call_info = call_info_nt(orig_method, args, kwargs, None, None)
             client_methods_gatekeeper(qualname(func), call_info)
 
             ret = None
@@ -314,7 +315,7 @@ class StatusCodeGateKeeper(object):
 
     def __call__(self, status_code, client_call_info):
         if status_code not in self.allowed:
-            print("Illegal status code", status_code)
+            print("StatusCodeGateKeeper: Illegal status code", status_code)
 
 
 class MethodGateKeeper(object):
@@ -324,4 +325,4 @@ class MethodGateKeeper(object):
     def __call__(self, method_name, client_call_info):
         call, args, kwargs, ret, error = client_call_info
         if call not in self.allowed:
-            print("enforcer: Illegal call to ", client_call_info.call.__name__)
+            print("MethodGateKeeper: Illegal call to ", client_call_info.call)

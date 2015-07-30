@@ -71,12 +71,12 @@ def get_call_logger():
         def call_logger(handler_call_info, client_call_infos):
             handler, handler_args, handler_kwargs, ret, error = handler_call_info
             clients, request, path_params, query_params, documenter = handler_args
-            #import pdb; pdb.set_trace()
-            print("my_call_logger: Handler of name={} was called".format(handler.__name__))
-            print(request, ret, error)
-            print("my_call_logger: It used the following calls")
+            print('*'*80 + " CALL LOGGER")
+            print("\t Handler of name={} was called with args {}".format(handler.__name__, path_params))
+            #print(request, ret, error)
+            print("\t Client calls")
             for client_method, c_args, c_kwargs, c_ret, c_error in client_call_infos:
-                print("\t -> client call", client_method)
+                print("\t\t -> client call " + client_method.__name__)
         return call_logger
 
 
@@ -96,8 +96,8 @@ ROUTES.append(
         document=ContestsDocument(),
         status_codes_gatekeeper=status_code_gatekeeper('422', '402', '201'),
         client_methods_gatekeeper=client_gatekeeper(
-            clients.sport_data.java_call_1,
-            clients.game_data.java_call_2
+            clients.sport_data.sport_data_java_call_1,
+            clients.game_data.game_data_java_call_2
         ),
         post_handler_hook=get_call_logger(),
         client_lru_cache=__debug__
@@ -118,7 +118,7 @@ ROUTES.append(
         query_handler=QueryHandler({'foo': foo_handler}),
         status_codes_gatekeeper=status_code_gatekeeper('422', '402', '201'),
         client_methods_gatekeeper=client_gatekeeper(
-            clients.sport_data.java_call_2
+            clients.sport_data.sport_data_java_call_2
         ),
         post_handler_hook=get_call_logger(),
         client_lru_cache=__debug__
