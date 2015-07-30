@@ -237,23 +237,25 @@ def wrap_clients(clients, call_store, client_methods_gatekeeper, client_lru_cach
             for name, method in inspect.getmembers(client, inspect.ismethod):
                 if not name.startswith('_'):
                     if client_lru_cache:
-                        new_method = lru_cache(method)
+                        new_method = lru_cache()(method)
                     if client_methods_gatekeeper:
                         new_method = client_meth_wrapper(new_method)
                     self.method_proxies[method.__name__] = new_method
 
         def __getattr__(self, thing):
-            return self.client.thing
+            if thing in self.method_proxies:
+                return self.method_proxies[thing]
+            return getattr(self.method_proxies, thing)
 
     def client_meth_wrapper(func):
-        def inner(*args, **kwargs):
+        def inner(self, *args, **kwargs):
             call_info = call_info_nt(func, args, kwargs, None, None)
             client_methods_gatekeeper(call_info)
 
             ret = None
             error = None
             try:
-                ret = func(*args, **kwargs)
+                ret = func(self, *args, **kwargs)
             except Exception as error:
                 pass
             finally:
@@ -266,9 +268,7 @@ def wrap_clients(clients, call_store, client_methods_gatekeeper, client_lru_cach
 
     client_proxies = []
     for client in clients:
-        print(client)
         client_proxies.append(ClientProxy(client))
-    print(client_proxies, clients)
     return clients_nt(*client_proxies)
 
 
@@ -322,7 +322,7 @@ class MethodGateKeeper(object):
     def __init__(self, allowed):
         self.allowed = allowed
 
-    def __call__(self, method, client_call_info):
-        if method not in self.allowed:
-            call, args, kwargs, ret, error = client_call_info
+    def __call__(self, client_call_info):
+        call, args, kwargs, ret, error = client_call_info
+        if call not in self.allowed:
             print("enforcer: Illegal call to ", client_call_info.call.__name__)
