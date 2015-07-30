@@ -8,6 +8,10 @@
 from contest_managers import FakeManager
 
 
+def foo_handler(request, path_params):
+    return 'defaultvalue'
+
+
 def ContestsHandler(request, path_params, query_params, clients, documenter):
     """
     The contests collection resource provides lists of contests filtered by

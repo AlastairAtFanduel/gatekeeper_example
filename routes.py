@@ -34,7 +34,7 @@ Experiment passing inspectable elements into handlers via routes.
             So any pdb can access the external/c3pyo call log for the current request.
 
 """
-from contest import ContestsHandler, ContestHandler
+from contest import ContestsHandler, ContestHandler, foo_handler
 from gate_keeper import (
     Route,
     PathHandler,
@@ -48,6 +48,7 @@ from clients import clients
 
 
 # \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+# Toys
 
 def client_gatekeeper(*allowed_methods):
     if not __debug__:
@@ -63,15 +64,19 @@ def status_code_gatekeeper(*allowed_status_codes):
         return StatusCodeGateKeeper(allowed_status_codes)
 
 
-def my_call_logger(handler_call_info, client_call_infos):
-    if __debug__:
-        handler, handler_args, handler_kwargs, ret, error = handler_call_info
-        clients, request, path_params, query_params = handler_args
-        print("my_call_logger: Handler of name={} was called".format(handler.name))
-        print(request, ret, error)
-        print("my_call_logger: It used the following calls")
-        for client_method, c_args, c_kwargs, c_ret, c_error in client_call_infos:
-            print("\t -> client call", client_method)
+def get_call_logger():
+    if not __debug__:
+        return None
+    else:
+        def call_logger(handler_call_info, client_call_infos):
+            handler, handler_args, handler_kwargs, ret, error = handler_call_info
+            clients, request, path_params, query_params = handler_args
+            print("my_call_logger: Handler of name={} was called".format(handler.name))
+            print(request, ret, error)
+            print("my_call_logger: It used the following calls")
+            for client_method, c_args, c_kwargs, c_ret, c_error in client_call_infos:
+                print("\t -> client call", client_method)
+        return call_logger
 
 
 # //////////////////////////////////////////////////////////////
@@ -83,41 +88,41 @@ ROUTES = []
 ROUTES.append(
     Route(
         path='/contests',
-        name="GET /contests",
+        name='/contests',
+        verb='GET',
         handler=ContestsHandler,
         clients=clients,
         document=ContestsDocument,
+        status_codes_gatekeeper=status_code_gatekeeper('422', '402', '201'),
         client_methods_gatekeeper=client_gatekeeper(
             clients.sport_data.java_call_1,
             clients.game_data.java_call_2
         ),
-        status_codes_gatekeeper=status_code_gatekeeper('422', '402', '201'),
-        post_handler_hook=my_call_logger,
+        post_handler_hook=get_call_logger(),
         lru_cache=__debug__
     )
 )
+
 
 # GET CONTEST
 ROUTES.append(
     Route(
         path='/contests/<numeric_string:fixture_list_id>-<numeric_string:contest_id>',
-        name="GET /contest",
+        name='/contest',
+        verb='GET',
         handler=ContestHandler,
         clients=clients,
         document=ContestDocument,
         path_handler=PathHandler('fixture_list_id', 'contest_id'),
-        query_handler=QueryHandler({'foo': 'defaultvalue'}),
+        query_handler=QueryHandler({'foo': foo_handler}),
+        status_codes_gatekeeper=status_code_gatekeeper('422', '402', '201'),
         client_methods_gatekeeper=client_gatekeeper(
             clients.sport_data.java_call_2
         ),
-        status_codes_gatekeeper=status_code_gatekeeper('422', '402', '201'),
-        post_handler_hook=my_call_logger,
+        post_handler_hook=get_call_logger(),
         lru_cache=__debug__
     )
 )
 
 
-# ToDo:
-
-# Check responses instead of just status codes
-# Python2 doesnas have a full qual name for allowed_client_methods, name magic
+print(ROUTES)

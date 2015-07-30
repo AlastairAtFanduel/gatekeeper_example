@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Overview &mdash; FanDuel API documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="FanDuel API documentation" href="index.html"/>
+        <link rel="next" title="Resources" href="resources.html"/>
+        <link rel="prev" title="FanDuel API docs" href="index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> API</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="simple">
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#domain">Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#date-time-formats">Date &amp; time formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#general-server-errors">General server errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#general-client-errors">General client errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error-messaging">Error messaging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#redirects">Redirects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#http-verbs">HTTP Verbs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#authentication">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#response-glossary">Response glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hypermedia-and-links">Hypermedia and links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pagination">Pagination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rate-limiting">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conditional-requests">Conditional requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#media-types">Media types</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="resources/original.html">Contests</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Overview</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/overview.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="domain">
+<h2>Domain<a class="headerlink" href="#domain" title="Permalink to this headline">¶</a></h2>
+<p>All API access is over HTTPS from the <tt class="docutils literal"><span class="pre">api.fanduel.com</span></tt> domain. All data is
+sent and received in JSON format, using custom <a class="reference internal" href="#media-types">Media types</a>.</p>
+</div>
+<div class="section" id="date-time-formats">
+<h2>Date &amp; time formats<a class="headerlink" href="#date-time-formats" title="Permalink to this headline">¶</a></h2>
+<p>All time values are provided as strings in <a class="reference external" href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601</a> format:</p>
+<p><tt class="docutils literal"><span class="pre">YYYY-MM-DDTHH:MM:SSZ</span></tt></p>
+<p>e.g. <tt class="docutils literal"><span class="pre">2013-10-11T17:24:25Z</span></tt></p>
+<p>All duration values are provided as strings in <a class="reference external" href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601</a> duration format:</p>
+<p>e.g. <tt class="docutils literal"><span class="pre">PT2H33M12S</span></tt> - 2 hours, 33 minutes and 12 seconds</p>
+</div>
+<div class="section" id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<p>GET requests can include path parameters, e.g.</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">https://api.fanduel.com/users/12345</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p>GET requests can also include optional query string parameters, e.g.</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">https://api.fanduel.com/users/12345/entries?type=live</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p>Parameters not in the URL path for destructive or creative methods should be
+encoded as JSON, e.g.</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">POST</span> <span class="nn">https://api.fanduel.com/password-resets</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+{&quot;email&quot;: &quot;steelersfan@mailprovider.com&quot;}
+</pre></div>
+</div>
+</div>
+<div class="section" id="general-server-errors">
+<h2>General server errors<a class="headerlink" href="#general-server-errors" title="Permalink to this headline">¶</a></h2>
+<p>If the API service is unavailable, all requests will return a 503 SERVICE
+UNAVAILABLE response with a standard error response body (see
+<a class="reference internal" href="#error-messaging">Error messaging</a>).</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">503</span> <span class="ne">SERVICE UNAVAILABLE</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+    <span class="nt">&quot;errors&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;summary&quot;</span><span class="p">:</span> <span class="s2">&quot;Service unavailable&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;The FanDuel API service is currently unavailable.&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="general-client-errors">
+<h2>General client errors<a class="headerlink" href="#general-client-errors" title="Permalink to this headline">¶</a></h2>
+<p>There are some common error response codes across the API:</p>
+<p><tt class="docutils literal"><span class="pre">400</span> <span class="pre">Bad</span> <span class="pre">Request</span></tt> - Commonly caused by malformed JSON in the request body or
+sending unrecognised JSON values.</p>
+<p><tt class="docutils literal"><span class="pre">401</span> <span class="pre">Unauthorized</span></tt> - If a resource or action requires authentication</p>
+<p><tt class="docutils literal"><span class="pre">403</span> <span class="pre">Forbidden</span></tt> - If the requesting application is not permitted to use a
+resource.</p>
+<p><tt class="docutils literal"><span class="pre">404</span> <span class="pre">Not</span> <span class="pre">Found</span></tt> - If a resource is not found</p>
+<p><tt class="docutils literal"><span class="pre">405</span> <span class="pre">Method</span> <span class="pre">not</span> <span class="pre">allowed</span></tt> - If the attempted HTTP method is not supported on
+this resource</p>
+<p><tt class="docutils literal"><span class="pre">406</span> <span class="pre">Not</span> <span class="pre">Acceptable</span></tt> - If the requested media types can not be supported</p>
+<p><tt class="docutils literal"><span class="pre">415</span> <span class="pre">Unsupported</span> <span class="pre">Media</span> <span class="pre">Type</span></tt> - If the provided request data is not of a
+supported media type.</p>
+</div>
+<div class="section" id="error-messaging">
+<h2>Error messaging<a class="headerlink" href="#error-messaging" title="Permalink to this headline">¶</a></h2>
+<p>An error response <em>may</em> also include further details of the error(s), with
+the following body response format:</p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;errors&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;code&quot;</span><span class="p">:</span> <span class="s2">&quot;entry-010&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;summary&quot;</span><span class="p">:</span> <span class="s2">&quot;Salary cap exceeded&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;The total salaries for your choices exceeds the salary cap for this contest&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="object">
+<dt>
+<tt class="descname">errors (array)</tt></dt>
+<dd><p>A collection of error objects, each containing the following details:</p>
+<dl class="object">
+<dt>
+<tt class="descname">code (string)</tt></dt>
+<dd><p>The internal error code reference, if relevant. These are documented on
+the relevant resource.</p>
+</dd></dl>
+
+<dl class="object">
+<dt>
+<tt class="descname">summary (string)</tt></dt>
+<dd><p>A summary of the error, suitable for display to the user.</p>
+</dd></dl>
+
+<dl class="object">
+<dt>
+<tt class="descname">description (string)</tt></dt>
+<dd><p>A longer description of the error, suitable for display to the user.</p>
+</dd></dl>
+
+<dl class="object">
+<dt>
+<tt class="descname">attribute (string) - optional</tt></dt>
+<dd><p>A key indicating the attribute of the POST request body on which the
+error was raised. This always refers to the primary document in the
+request body.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="redirects">
+<h2>Redirects<a class="headerlink" href="#redirects" title="Permalink to this headline">¶</a></h2>
+<p>Any request could result in a redirect, so there should be generalised client
+code to handle them. Redirect responses will use a <tt class="docutils literal"><span class="pre">Location</span></tt> header
+containing the URI to repeat the request for.</p>
+</div>
+<div class="section" id="http-verbs">
+<h2>HTTP Verbs<a class="headerlink" href="#http-verbs" title="Permalink to this headline">¶</a></h2>
+<p>The FanDuel API uses appropriate HTTP verbs for each action</p>
+<p><tt class="docutils literal"><span class="pre">GET</span></tt> - Retrieve the resource</p>
+<p><tt class="docutils literal"><span class="pre">POST</span></tt> - Create resources or perform custom actions</p>
+<p><tt class="docutils literal"><span class="pre">PUT</span></tt> - Replace a resource or collection.</p>
+<p><tt class="docutils literal"><span class="pre">DELETE</span></tt> - Delete a resource.</p>
+</div>
+<div class="section" id="authentication">
+<h2>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h2>
+<p>See main article</p>
+</div>
+<div class="section" id="response-glossary">
+<h2>Response glossary<a class="headerlink" href="#response-glossary" title="Permalink to this headline">¶</a></h2>
+<p>We use a number of terms in describing response formats that are useful to
+understand</p>
+<dl class="docutils">
+<dt>response</dt>
+<dd>The result of making an HTTP request to the API.</dd>
+<dt>response body</dt>
+<dd>The entire JSON payload delivered as part of a response</dd>
+<dt>resource</dt>
+<dd>An abstract concept mapping to an object or process in the system that is
+being represented. e.g. a &#8216;roster&#8217; is a resource, as are &#8216;players&#8217;, &#8216;users&#8217;
+and &#8216;fixtures&#8217;.</dd>
+<dt>representation or document</dt>
+<dd>The current state of the referenced resource. A single response can include
+a number of documents, and a number of different document formats can
+represent a single resource. e.g. There may be a summary and a full document
+version of a document where the full version provides much more detailed
+information.</dd>
+</dl>
+</div>
+<div class="section" id="hypermedia-and-links">
+<h2>Hypermedia and links<a class="headerlink" href="#hypermedia-and-links" title="Permalink to this headline">¶</a></h2>
+<p>Documents may contain a <tt class="docutils literal"><span class="pre">_url</span></tt> property that links to a canonical
+representation wherever they appear. Often a separate <tt class="docutils literal"><span class="pre">id</span></tt> property is also
+included.  The <tt class="docutils literal"><span class="pre">_url</span></tt> properties should be used rather than
+constructing URLs in the client, e.g. from <tt class="docutils literal"><span class="pre">id</span></tt> attributes.</p>
+<p>Some responses may include multiple document types. For example, a request for a
+user&#8217;s live rosters can include details of the fixture lists and players related
+to those rosters as summary documents. In this case, unique summary documents
+are returned at the root of the document, and the <tt class="docutils literal"><span class="pre">_ref</span></tt> and <tt class="docutils literal"><span class="pre">_members</span></tt>
+attributes are used to specify the relationship, in addition to providing a
+<tt class="docutils literal"><span class="pre">_url</span></tt> where the related resource&#8217;s canonical representation can be found.</p>
+<div class="section" id="one-to-one-relationship-example">
+<h3>One-to-one relationship example<a class="headerlink" href="#one-to-one-relationship-example" title="Permalink to this headline">¶</a></h3>
+<p>An <tt class="docutils literal"><span class="pre">entry</span></tt> resource may refer to a related <tt class="docutils literal"><span class="pre">contest</span></tt> summary with a link to
+its canonical representation:</p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;entries&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;987&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.fanduel.com/entries/987&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;prize&quot;</span><span class="p">:</span> <span class="s2">&quot;$9&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;contest&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;_ref&quot;</span><span class="p">:</span> <span class="s2">&quot;contests.id&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;_members&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;654&quot;</span><span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;contests&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;654&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.fanduel.com/contests/3232-654&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;NFL 50/50 League&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="one-to-many-relationship-example">
+<h3>One-to-many relationship example<a class="headerlink" href="#one-to-many-relationship-example" title="Permalink to this headline">¶</a></h3>
+<p>A <tt class="docutils literal"><span class="pre">roster</span></tt> resource may refer to member <tt class="docutils literal"><span class="pre">player</span></tt> summaries, each of which
+could be shared by a number of rosters:</p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;rosters&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;432&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.fanduel.com/users/12345/rosters/432&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;score&quot;</span><span class="p">:</span> <span class="mf">43.5</span><span class="p">,</span>
+            <span class="nt">&quot;players&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;_ref&quot;</span><span class="p">:</span> <span class="s2">&quot;players.id&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;_members&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;1357&quot;</span><span class="p">,</span> <span class="s2">&quot;2468&quot;</span><span class="p">,</span> <span class="s2">&quot;3579&quot;</span><span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;players&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;1357&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.fanduel.com/players/1357&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Aaron&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;last_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Rodgers&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;position&quot;</span><span class="p">:</span> <span class="s2">&quot;QB&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;2468&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.fanduel.com/players/2468&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;first_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Marshawn&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;last_name&quot;</span><span class="p">:</span> <span class="s2">&quot;Lynch&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;position&quot;</span><span class="p">:</span> <span class="s2">&quot;RB&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>e.g. Or if the <tt class="docutils literal"><span class="pre">players</span></tt> are available at a separate location:</p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;rosters&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;432&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.fanduel.com/users/12345/rosters/432&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;score&quot;</span><span class="p">:</span> <span class="mf">43.5</span><span class="p">,</span>
+            <span class="nt">&quot;players&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="nt">&quot;_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.fanduel.com/users/12345/rosters/432/players&quot;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>It is also possible that both a <tt class="docutils literal"><span class="pre">_url</span></tt> and a combination <tt class="docutils literal"><span class="pre">_ref</span></tt> and
+<tt class="docutils literal"><span class="pre">_members</span></tt> attributes may be given for a one-to-many relationship.</p>
+</div>
+</div>
+<div class="section" id="pagination">
+<h2>Pagination<a class="headerlink" href="#pagination" title="Permalink to this headline">¶</a></h2>
+<p>Collections returning multiple items are paginated using a consistent format.</p>
+<p>Query string parameters can be used to specify the items required:</p>
+<p><tt class="docutils literal"><span class="pre">page</span></tt> - The page to request. 1-based. The default value is <tt class="docutils literal"><span class="pre">1</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">page_size</span></tt> - The number of items to return per page. Maximum and default
+values vary by resource.</p>
+<p>In a paged response, the <tt class="docutils literal"><span class="pre">Link</span></tt> HTTP header is used to indicate related pages,
+e.g.</p>
+<div class="highlight-http"><pre>Link: &lt;https://api.fanduel.com/users/1234/entries?type=live&amp;page=2&amp;page_size=50&gt;; rel="next",
+    &lt;https://api.fanduel.com/users/1234/entries?type=live&amp;page=10&amp;page_size=50&gt;; rel="last",
+    &lt;https://api.fanduel.com/users/1234/entries?type=live&amp;page=1&amp;page_size=50&gt;; rel="first"</pre>
+</div>
+<p>The possible values of <tt class="docutils literal"><span class="pre">rel</span></tt> are <tt class="docutils literal"><span class="pre">first</span></tt>, <tt class="docutils literal"><span class="pre">last</span></tt>, <tt class="docutils literal"><span class="pre">prev</span></tt> and <tt class="docutils literal"><span class="pre">next</span></tt>.</p>
+<p>Where multiple document types are provided in a response, pagination is over the
+primary (requested) resource representation, which is specified in a <tt class="docutils literal"><span class="pre">_meta</span></tt>
+section:</p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;_meta&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;_primary_document&quot;</span><span class="p">:</span> <span class="s2">&quot;entries&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;entries&quot;</span><span class="p">:</span> <span class="p">[</span>
+
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="rate-limiting">
+<h2>Rate limiting<a class="headerlink" href="#rate-limiting" title="Permalink to this headline">¶</a></h2>
+<p>TODO</p>
+</div>
+<div class="section" id="conditional-requests">
+<h2>Conditional requests<a class="headerlink" href="#conditional-requests" title="Permalink to this headline">¶</a></h2>
+<p>TODO. Last-modified, If-None-Match, If-Modified-Since, ETag etc.</p>
+</div>
+<div class="section" id="media-types">
+<h2>Media types<a class="headerlink" href="#media-types" title="Permalink to this headline">¶</a></h2>
+<p>TODO</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="resources.html" class="btn btn-neutral float-right" title="Resources"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="FanDuel API docs"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Fanduel.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.2.3',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

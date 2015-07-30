@@ -6,9 +6,13 @@
 
 from routes import ROUTES
 
+
+
+
 for route in ROUTES:
-    print(route.name)
-    print(route.path)
+    print()
+    print(route.path_params)
+    print(route.query_params)
     print(route.endpoint.handler.__doc__)
     print(route.endpoint.path_handler)
     print(route.endpoint.query_handler)

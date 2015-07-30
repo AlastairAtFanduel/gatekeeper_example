@@ -1,0 +1,370 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Contests &mdash; FanDuel API documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="FanDuel API documentation" href="../index.html"/>
+        <link rel="up" title="Resources" href="../resources.html"/>
+        <link rel="prev" title="Resources" href="../resources.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../index.html" class="fa fa-home"> API</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="simple">
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#domain">Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#date-time-formats">Date &amp; time formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#general-server-errors">General server errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#general-client-errors">General client errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#error-messaging">Error messaging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#redirects">Redirects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#http-verbs">HTTP Verbs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#authentication">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#response-glossary">Response glossary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#hypermedia-and-links">Hypermedia and links</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#pagination">Pagination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#rate-limiting">Rate limiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#conditional-requests">Conditional requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#media-types">Media types</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../resources.html">Resources</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">Contests</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../resources.html">Resources</a> &raquo;</li>
+      
+    <li>Contests</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../_sources/resources/original.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="contests">
+<h1>Contests<a class="headerlink" href="#contests" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="get-contests"></span><dl class="get">
+<dt id="get--contests">
+<tt class="descname">GET </tt><tt class="descname">/contests</tt><a class="headerlink" href="#get--contests" title="Permalink to this definition">¶</a></dt>
+<dd><p>The contests collection resource provides lists of contests filtered by
+various parameters.  If no fixture_list is specfied then only pinned contests
+over all upcoming fixture_lists will be provided (in this case
+fixture_lists will be be an empty list).</p>
+<p><strong>Authentication required</strong>: No</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><pre>GET /contests?fixture_list=8010
+Host: api.fanduel.com
+Accept: application/json</pre>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<div class="highlight-json"><pre>{
+    "_meta": {
+        "_primary_document": "contests",
+        "count": 287,
+        "entry_fees": [0, 1, 2, 5, 10, 25, 50, 109, 270, 535, 1000, 10000]
+    },
+    "contests": [
+        &lt;Open contest document&gt;,
+        &lt;Open contest document&gt;
+    ],
+    "contest_types": [
+        &lt;Contest type document&gt;,
+        &lt;Contest type document&gt;
+    ],
+    "contest_sub_types": [
+        &lt;Contest sub type document&gt;,
+        &lt;Contest sub type document&gt;
+    ],
+    "fixture_lists": [
+        &lt;Fixture list summary document&gt;,
+        &lt;Fixture list summary document&gt;
+    ],
+    "users": [
+        &lt;User summary document&gt;,
+        &lt;User summary document&gt;
+    ]
+}</pre>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Query Parameters:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body"><ul class="first last simple">
+<li><strong>fixture_list</strong> (<em>string</em>) &#8211; The id of the fixture list to return contests for.</li>
+<li><strong>contest_types</strong> (<em>string</em>) &#8211; The types of contests to return.
+Takes a comma-separated list of contest types.
+Valid contest types are <tt class="docutils literal"><span class="pre">H2H</span></tt>, <tt class="docutils literal"><span class="pre">LEAGUE</span></tt>, <tt class="docutils literal"><span class="pre">TOURNAMENT</span></tt>,
+<tt class="docutils literal"><span class="pre">FIFTY_FIFTY</span></tt> and <tt class="docutils literal"><span class="pre">MULTIPLIER</span></tt>.</li>
+<li><strong>include_restricted</strong> &#8211; Include restricted contests.
+Acceptable values true and false. Default value is false.</li>
+<li><strong>include_unpinned</strong> (<em>string</em>) &#8211; Include contests which are unpinned.
+include_unpinned=true return pinned and unpinned contests
+include_unpinned=false return pinned contests
+Default value is &#8216;true&#8217;.
+This query string is ignored if there is no fixture_list query.</li>
+<li><strong>status</strong> (<em>string</em>) &#8211; The status of contests to return. Only <tt class="docutils literal"><span class="pre">open</span></tt> is permitted (the default).</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example query combinations</strong>:</p>
+<blockquote>
+<div><p>Note: All queries below,</p>
+<blockquote>
+<div><ul class="simple">
+<li>include pinned contests.</li>
+<li>exclude restricted contests.  Adding <tt class="docutils literal"><span class="pre">include_restricted=true</span></tt> would include them.</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p class="first">fixture_list_id:</p>
+<div class="highlight-python"><pre>GET /contests?fixture_list=8010</pre>
+</div>
+</li>
+<li><p class="first">fixture_list_id + contest_types:</p>
+<div class="highlight-python"><pre>GET /contests?fixture_list=8010&amp;contest_types=FIFTY_FIFTY,MULTIPLIER</pre>
+</div>
+</li>
+<li><p class="first">fixture_list_id + pinned only:</p>
+<div class="highlight-python"><pre>GET /contests?fixture_list=8010&amp;include_unpinned=false</pre>
+</div>
+</li>
+<li><p class="first">Only pinned contests from all upcoming fixture_lists:</p>
+<div class="highlight-python"><pre>GET /contests
+
+N.B. fixture_lists will be an empty list in this case.</pre>
+</div>
+</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Status Codes:</th><td class="field-body"><ul class="first last simple">
+<li><strong>200</strong> &#8211; No error</li>
+<li><strong>422</strong> &#8211; Unprocessable entity - query parameters invalid</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Documents</strong>:</p>
+</dd></dl>
+
+<span class="target" id="get-contest"></span><dl class="get">
+<dt id="get--contests-(str-id)">
+<tt class="descname">GET </tt><tt class="descname">/contests/</tt><big>(</big><em class="property">str: </em><em>id</em><big>)</big><a class="headerlink" href="#get--contests-(str-id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>The individual contest resource provides detailed information about the
+contest, rules, associated fixtures and prize structures.</p>
+<p><strong>Authentication required</strong>: No</p>
+<p>Responds with information about a contest, including sport, name, salary
+cap, size, entry count, entry fee, total prize amount, prize breakdown,
+fixtures, rules, start time.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="nf">GET</span> <span class="nn">/contests/343434-2914582</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">api.fanduel.com</span>
+<span class="na">Accept</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http"><div class="highlight"><pre><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Vary</span><span class="o">:</span> <span class="l">Accept</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<div class="highlight-json"><pre>{
+    "_meta": {
+        "_primary_document": "contests"
+    },
+    "contests": [
+        &lt; Full contest document &gt;
+    ],
+    "fixture_lists": [
+        &lt; Fixture list summary document &gt;
+    ],
+    "fixtures": [
+        &lt; Fixture document &gt;,
+        &lt; Fixture document &gt;
+    ],
+    "teams": [
+        &lt; Team document &gt;,
+        &lt; Team document &gt;
+    ],
+    "users": [
+        &lt; User document &gt;,
+        &lt; User document &gt;
+    ]
+}</pre>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> (<em>string</em>) &#8211; Contest ID</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Status Codes:</th><td class="field-body"><ul class="first last simple">
+<li><strong>200</strong> &#8211; No error</li>
+<li><strong>404</strong> &#8211; Contest not found</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Documents</strong>:</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../resources.html" class="btn btn-neutral" title="Resources"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Fanduel.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.2.3',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,1 +1,12 @@
-Test
+
+# ToDo:
+
+# Check responses instead of just status codes
+# Python2 doesnas have a full qual name for allowed_client_methods, name magic
+
+
+inpsect
+generate docs
+examples https://pythonhosted.org/sphinxcontrib-programoutput/
+docs from better strings  https://pypi.python.org/pypi/sphinxcontrib-napoleon
+RAML output?

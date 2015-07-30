@@ -64,18 +64,23 @@ class Route(object):
 
     def __init__(
         self,
+        path,
         name,
+        verb,
         handler,
         clients,               # To allow easy client call detection
         document,              # erm
         path_handler=None,                  # Needs to be inspectable
         query_handler=None,                 # Needs to be inspectable
-        client_methods_gatekeeper=None,     # Needs to be inspectable
         status_codes_gatekeeper=None,       # Needs to be inspectable
+        client_methods_gatekeeper=None,     # Needs to be inspectable
         lru_cache=False,                # While we are here.
         pre_handler_hook=None,              # Not sure why yet.
         post_handler_hook=None,             # Support graphing calls etc.
     ):
+        self.path = path
+        self.name = name
+        self.verb = verb
         self.handler = handler
         self._clients = clients
         self.document = document
@@ -172,14 +177,25 @@ class Route(object):
         """
         return self(request, **values)
 
+    def __dir__(self):
+        # Only here to make demo simple
+        return [
+            'path_params',
+            'query_params',
+            'allowed_client_methods',
+            'allowed_status_codes',
+            'documents_doc',
+            'handler_doc'
+        ]
+
     # inspector stuff
     @property
     def path_params(self):
-        return self.path_handler._fields
+        return self.path_handler.params
 
     @property
     def query_params(self):
-        return self.query_handler._fields
+        return self.query_handler.query_params.params
 
     @property
     def allowed_client_methods(self):
@@ -246,11 +262,37 @@ def clients_wrapper(clients, call_store, client_methods_gatekeeper):
 # Toys and Fakery
 
 
-def basic_thing_handler(*args):
-    return namedtuple('client', args)
+class PathHandler(object):
+    def __init__(self, *path_params):
+        self.path_params = path_params
 
-PathHandler = basic_thing_handler
-QueryHandler = basic_thing_handler
+    @property
+    def params(self):
+        return self.path_params
+
+    def __call__(self, request, path_param_values):
+        return namedtuple('path_handler', self.path_params)(path_param_values)
+
+
+class QueryHandler(object):
+
+    def __init__(self, query_params):
+        self.query_params = query_params
+
+    @property
+    def params(self):
+        return list(self.query_params)
+
+    def __call__(self, request, path_params):
+        keys = self.query_params.keys()
+        values = []
+        for key in keys:
+            query_handler = self.query_params.get(key)
+            if query_handler:
+                value = query_handler(request, path_params)
+                values.append(value)
+
+        return namedtuple('query_handler', keys)(values)
 
 
 class StatusCodeGateKeeper(object):
