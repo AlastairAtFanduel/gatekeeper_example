@@ -123,6 +123,3 @@ ROUTES.append(
         lru_cache=__debug__
     )
 )
-
-
-print(ROUTES)
