@@ -89,5 +89,5 @@ for handler_name, query_params, client_methods in yield_call_data():
 
 # Could quite easily record the call graph for everything, and query down to
 # find what params cause what calls.
-# What errors are caused by what calls.
+# What errors are caused by what calls and parameter sets.
 # Could capture everything.

@@ -5,27 +5,33 @@
 # This is just to make the implementation simple for now.
 # Implementation could be split out much more.
 
-
-def FakeManager(object):
-    def __init__(self, clients):
-        self._clients = clients()
-
-    def get_contests(self):
-        contests = self._clients.sport_data.java_call_1("aaa")
-        fixture_lists = self._clients.game_data.java_call_2("bbb")
-        return contests, fixture_lists
-
-    def get_contest(self):
-        print("CALLED get_contest")
-        contest = self._clients.sport_data.java_call_2("aaa")
-        return contest
-
-    def call_unexpected_thing(self):
-        y = self._clients.game_data.java_call_1("bbb")
-        return y
+from contest_managers import FakeManager
 
 
-def ContestsHandler(request, path_params, query_params, clients):
+def ContestsHandler(request, path_params, query_params, clients, documenter):
+    """
+    The contests collection resource provides lists of contests filtered by
+    various parameters.  If no fixture_list is specfied then only pinned contests
+    over all upcoming fixture_lists will be provided (in this case
+    fixture_lists will be be an empty list).
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        GET /contests?fixture_list=8010
+        Host: api.fanduel.com
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Vary: Accept
+        Content-Type: application/json
+    """
+
     contests_manager = FakeManager(clients)
 
     print("ContestsHandler: FIRST CALL get_contests")
@@ -35,10 +41,11 @@ def ContestsHandler(request, path_params, query_params, clients):
         'contests': contests,
         'fixture_lists': fixture_lists,
     }
-    return data
+    document = documenter(data)
+    return document
 
 
-def ContestHandler(request, path_params, query_params, clients):
+def ContestHandler(request, path_params, query_params, clients, documenter):
     contest_manager = FakeManager(clients)
 
     fixture_list_id = path_params.fixture_list_id
@@ -59,7 +66,6 @@ def ContestHandler(request, path_params, query_params, clients):
     data = {
         'contest': contest,
     }
-    return data
 
-
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    document = documenter(data)
+    return document

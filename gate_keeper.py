@@ -2,10 +2,14 @@ from collections import namedtuple
 import functools
 import inspect
 
+from clients import clients_nt
+
+from werkzeug.routing import Rule
+
 call_info_nt = namedtuple('call_info_nt', ['call', 'args', 'kwargs', 'ret', 'error'])
 
 
-class GateKeeper(object):
+class Route(object):
     """
     Puts everything that is good to know in one place.
 
@@ -62,28 +66,27 @@ class GateKeeper(object):
         self,
         name,
         handler,
-        clients=None,           # To allow easy client call detection
-        path_handler=None,             # Needs to be inspectable
-        query_handler=None,            # Needs to be inspectable
-        allowed_status_codes=None,     # Needs to be inspectable
-        allowed_methods=None,          # Needs to be inspectable
-        disallowed_status_code_hook=None,   # To support debuging/enforcement.
-        disallowed_method_hook=None,        # To support debuging/enforcement.
-        lru_cache=True,                # While we are here.
+        clients,               # To allow easy client call detection
+        document,              # erm
+        path_handler=None,                  # Needs to be inspectable
+        query_handler=None,                 # Needs to be inspectable
+        client_methods_gatekeeper=None,     # Needs to be inspectable
+        status_codes_gatekeeper=None,       # Needs to be inspectable
+        lru_cache=False,                # While we are here.
         pre_handler_hook=None,              # Not sure why yet.
         post_handler_hook=None,             # Support graphing calls etc.
     ):
         self.handler = handler
-        self.clients = clients
+        self._clients = clients
+        self.document = document
 
         self.path_handler = path_handler
         self.query_handler = query_handler
 
-        self.allowed_status_codes = allowed_status_codes
-        self.allowed_methods = allowed_methods
-        self.disallowed_status_code_hook = disallowed_status_code_hook
-        self.disallowed_method_hook = disallowed_method_hook
+        self.client_methods_gatekeeper = client_methods_gatekeeper
+        self.status_codes_gatekeeper = status_codes_gatekeeper
         self.lru_cache = lru_cache
+        self.pre_handler_hook = pre_handler_hook
         self.post_handler_hook = post_handler_hook
 
     def make_params_model(self, path_params):
@@ -103,13 +106,12 @@ class GateKeeper(object):
             query_params = None
         return query_params
 
-    def get_clients(self, call_array):
-        if self.allowed_methods:
+    def wrap_clients(self, call_array):
+        if self.client_methods_gatekeeper or self.lru_cache:
             clients = clients_wrapper(
                 self.clients,
                 call_array,
-                self.allowed_methods,
-                self.disallowed_method_hook,
+                self.client_methods_gatekeeper,
                 self.lru_cache,
             )
         else:
@@ -129,7 +131,7 @@ class GateKeeper(object):
 
         # Maybe wrap clients
         client_call_infos = []
-        clients = self.get_clients(client_call_infos)
+        clients = self.wrap_clients(client_call_infos)
 
         # Service the request.
         error = None
@@ -141,9 +143,9 @@ class GateKeeper(object):
             call_info = call_info_nt(self.handler, args, None, ret, error)
         else:
             call_info = call_info_nt(self.handler, args, None, ret, error)
-            if ret.status not in self.allowed_status:
-                if self.disallowed_status_code_hook:
-                    self.disallowed_status_code_hook(call_info)
+            if self.status_codes_gatekeeper:
+                self.status_codes_gatekeeper(ret.status, call_info)
+
         finally:
             if self.post_handler_hook:
                 self.post_handler_hook(call_info, client_call_infos)
@@ -152,24 +154,72 @@ class GateKeeper(object):
             raise error
         return ret
 
-    # Is this possible
-    # def __doc__(self):
-    #    return self.handler.__doc__
-    #
-    # def last_call(self):
-    #    pass
+    def to_werkzeug(self):
+        """
+        Create a werkzeug Rule object.
+
+        :returns: werkzeug.routing.Rule.
+        """
+        return Rule(self.path, endpoint=self.name)
+
+    def invoke_handler(self, request, **values):
+        """
+        Calls the routes endpoint and returns the response.
+
+        :param request:
+        :param values: dict -- kwargs of request endpoint values.
+        :returns: werkzeug.wrappers.Response.
+        """
+        return self(request, **values)
+
+    # inspector stuff
+    @property
+    def path_params(self):
+        return self.path_handler._fields
+
+    @property
+    def query_params(self):
+        return self.query_handler._fields
+
+    @property
+    def allowed_client_methods(self):
+        return self.client_methods_gatekeeper.allowed
+
+    @property
+    def allowed_status_codes(self):
+        return self.status_codes_gatekeeper.allowed
+
+    @property
+    def documents_doc(self):
+        return self.document.__doc__
+
+    @property
+    def handler_doc(self):
+        return self.handler.__doc__
 
 
-def clients_wrapper(clients, call_store, allowed_methods, disallowed_method_handler):
+def clients_wrapper(clients, call_store, client_methods_gatekeeper):
     # Save the client calls.
     assert isinstance(call_store, list)
 
+    class ClientProxy(object):
+        def __init__(self, client):
+            self.client = client
+            self.method_proxies = {}
+
+            for method in inspect.getmembers(client, inspect.ismethod):
+                if not method.__name__.startwith('_'):
+                    lru_cached_method = functools.lru_cache(method)
+                    new_method = client_meth_wrapper(lru_cached_method)
+                    self.method_proxies[method.__name__] = new_method
+
+        def __getattr__(self, thing):
+            return self.client.thing
+
     def client_meth_wrapper(func):
         def inner(*args, **kwargs):
-            if func not in allowed_methods:
-                if disallowed_method_handler:
-                    call_info = call_info_nt(func, args, kwargs, None, None)
-                    disallowed_method_handler(call_info)
+            call_info = call_info_nt(func, args, kwargs, None, None)
+            client_methods_gatekeeper(call_info)
 
             ret = None
             error = None
@@ -185,12 +235,11 @@ def clients_wrapper(clients, call_store, allowed_methods, disallowed_method_hand
             return ret
         return inner
 
+    client_proxies = []
     for client in clients:
-        for method in inspect.getmembers(client, inspect.ismethod):
-            if not method.__name__.startwith('_'):
-                lru_cached_method = functools.lru_cache(method)
-                new_method = client_meth_wrapper(lru_cached_method)
-                client.__setattr__(client, method.__name__, new_method)
+        client_proxies.append(ClientProxy(client))
+
+    return clients_nt(*client_proxies)
 
 
 # ////////////////////////////////////////////////////////////////
@@ -204,32 +253,20 @@ PathHandler = basic_thing_handler
 QueryHandler = basic_thing_handler
 
 
-def enforcer(client_call_info):
-    """Placeholder This really needs a defined interface"""
-    call, args, kwargs, ret, error = client_call_info
-    print("enforcer: Illegal call to ", client_call_info.call.__name__)
+class StatusCodeGateKeeper(object):
+    def __init__(self, allowed):
+        self.allowed = allowed
+
+    def __call__(self, status_code):
+        if status_code not in self.allowed:
+            print("Illegal status code", status_code)
 
 
-def my_call_logger(handler_call_info, client_call_infos):
-    # Print
-    handler, handler_args, handler_kwargs, ret, error = handler_call_info
-    clients, request, path_params, query_params = handler_args
-    print("my_call_logger: Handler of name={} was called".format(handler.name))
-    print(request, ret, error)
-    print("my_call_logger: It used the following calls")
-    for client_method, client_args, client_kwargs, client_ret, client_error in client_call_infos:
-        print("\t -> client call", client_method)
+class MethodGateKeeper(object):
+    def __init__(self, allowed):
+        self.allowed = allowed
 
-
-# //////////////////////////////////////////////////////////////
-
-
-GateKeeper = functools.partial(
-    GateKeeper,
-    disallowed_method_hook=enforcer,
-    post_handler_hook=my_call_logger
-)
-
-
-# allowed_methods and disallowed_method_hook could be merged
-# allowed_status_codes and disallowed_method_hook
+    def __call__(self, method, client_call_info):
+        if method not in self.allowed:
+            call, args, kwargs, ret, error = client_call_info
+            print("enforcer: Illegal call to ", client_call_info.call.__name__)

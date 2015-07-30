@@ -1,9 +1,7 @@
 """
-EXPERIMENTAL ROUTES WITH GATEKEEPER
+EXPERIMENTAL ROUTES
 
-What is a gatekeeper?
-
-It is a handler wrapper that provides:
+Experiment passing inspectable elements into handlers via routes.
 
     inspection:
         For each handler can import and see:
@@ -35,73 +33,91 @@ It is a handler wrapper that provides:
         .last_call also stores this information for the last call.
             So any pdb can access the external/c3pyo call log for the current request.
 
-# P.S. Route and Gatekeeper could be merged.
 """
-
 from contest import ContestsHandler, ContestHandler
-from gate_keeper import GateKeeper, PathHandler, QueryHandler
+from gate_keeper import (
+    Route,
+    PathHandler,
+    QueryHandler,
+    MethodGateKeeper,
+    StatusCodeGateKeeper
+)
+from documents import ContestsDocument, ContestDocument
 
 from clients import clients
 
 
+# \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+def client_gatekeeper(*allowed_methods):
+    if not __debug__:
+        return None
+    else:
+        return MethodGateKeeper(allowed_methods)
+
+
+def status_code_gatekeeper(*allowed_status_codes):
+    if not __debug__:
+        return None
+    else:
+        return StatusCodeGateKeeper(allowed_status_codes)
+
+
+def my_call_logger(handler_call_info, client_call_infos):
+    if __debug__:
+        handler, handler_args, handler_kwargs, ret, error = handler_call_info
+        clients, request, path_params, query_params = handler_args
+        print("my_call_logger: Handler of name={} was called".format(handler.name))
+        print(request, ret, error)
+        print("my_call_logger: It used the following calls")
+        for client_method, c_args, c_kwargs, c_ret, c_error in client_call_infos:
+            print("\t -> client call", client_method)
+
+
+# //////////////////////////////////////////////////////////////
+
+
 ROUTES = []
 
-
-class Route(object):
-    """
-    Used to wrap werkzeugs Rule object and associate a rule with an endpoint.
-    """
-    def __init__(self, path, name=None, endpoint=None):
-        self.path = path
-        self.name = name
-        self.endpoint = endpoint
-
 # GET CONTESTS
-get_contests_handler = GateKeeper(
-    name="GET_contests",
-    handler=ContestsHandler,
-    clients=clients,
-    allowed_client_methods=[
-        clients.sport_data.java_call_1,
-        clients.game_data.java_call_2
-    ],
-    allowed_status_codes=('422', '402', '201')
-)
-
 ROUTES.append(
     Route(
-        '/contests',
-        name='contests',
-        endpoint=get_contests_handler
+        path='/contests',
+        name="GET /contests",
+        handler=ContestsHandler,
+        clients=clients,
+        document=ContestsDocument,
+        client_methods_gatekeeper=client_gatekeeper(
+            clients.sport_data.java_call_1,
+            clients.game_data.java_call_2
+        ),
+        status_codes_gatekeeper=status_code_gatekeeper('422', '402', '201'),
+        post_handler_hook=my_call_logger,
+        lru_cache=__debug__
     )
 )
 
 # GET CONTEST
-get_contest_handler = GateKeeper(
-    name="GET_contest",
-    handler=ContestHandler,
-    clients=clients,
-    path_handler=PathHandler('fixture_list_id', 'contest_id'),
-    query_handler=QueryHandler({'foo': 'defaultvalue'}),
-    allowed_client_methods=[
-        clients.sport_data.java_call_2
-    ],
-    allowed_status_codes=('422', '402', '201')
-)
-
 ROUTES.append(
     Route(
-        '/contests/<numeric_string:fixture_list_id>-<numeric_string:contest_id>',
-        name='contest',
-        endpoint=get_contest_handler
+        path='/contests/<numeric_string:fixture_list_id>-<numeric_string:contest_id>',
+        name="GET /contest",
+        handler=ContestHandler,
+        clients=clients,
+        document=ContestDocument,
+        path_handler=PathHandler('fixture_list_id', 'contest_id'),
+        query_handler=QueryHandler({'foo': 'defaultvalue'}),
+        client_methods_gatekeeper=client_gatekeeper(
+            clients.sport_data.java_call_2
+        ),
+        status_codes_gatekeeper=status_code_gatekeeper('422', '402', '201'),
+        post_handler_hook=my_call_logger,
+        lru_cache=__debug__
     )
 )
 
+
 # ToDo:
 
-# Merge Route and GateKeeper
-# ToDo GateKeeper could return a route.  Some duplication. path params etc.
-# GateKeeper could do with a bit of seperation.
-# allowed_status_codes maybe make more powerfollow check sub error codes etc.
 # Check responses instead of just status codes
 # Python2 doesnas have a full qual name for allowed_client_methods, name magic
