@@ -3,7 +3,7 @@
 
 # Check responses instead of just status codes
 # Python2 doesnas have a full qual name for allowed_client_methods, name magic
-
+# Werkzeug could populate path_handler
 
 inpsect
 generate docs

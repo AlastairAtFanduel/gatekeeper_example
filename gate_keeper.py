@@ -84,7 +84,7 @@ class Route(object):
         self.name = name
         self.verb = verb
         self.handler = handler
-        self._clients = clients
+        self.raw_clients = clients
         self.document = document
 
         self.path_handler = path_handler
@@ -113,18 +113,6 @@ class Route(object):
             query_params = None
         return query_params
 
-    def wrap_clients(self, call_array):
-        if self.client_methods_gatekeeper or self.lru_cache:
-            clients = clients_wrapper(
-                self.clients,
-                call_array,
-                self.client_methods_gatekeeper,
-                self.lru_cache,
-            )
-        else:
-            clients = self.clients
-        return clients
-
     def __call__(self, request, *path_params):
         # Not used at all
         if self.pre_handler_hook:
@@ -138,7 +126,12 @@ class Route(object):
 
         # Maybe wrap clients
         client_call_infos = []
-        clients = self.wrap_clients(client_call_infos)
+        if self.client_methods_gatekeeper or self.lru_cache:
+            clients = wrap_clients(
+                client_call_infos, client_call_infos, self.client_methods_gatekeeper, self.lru_cache
+            )
+        else:
+            clients = self.raw_clients
 
         # Service the request.
         error = None
@@ -222,6 +215,16 @@ class Route(object):
     @property
     def handler_doc(self):
         return self.handler.__doc__
+
+
+def wrap_clients(clients, call_array, client_methods_gatekeeper, lru_cache):
+    clients = clients_wrapper(
+        clients,
+        call_array,
+        client_methods_gatekeeper,
+        lru_cache,
+    )
+    return clients
 
 
 def clients_wrapper(clients, call_store, client_methods_gatekeeper):

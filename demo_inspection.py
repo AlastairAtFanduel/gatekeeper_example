@@ -11,8 +11,8 @@ print(dir(ROUTES[0]))
 
 for route in ROUTES:
     print('-'*80)
-    #for item in dir(route):
-    #    print('{}={}'.format(item, getattr(route, item)))
+    #for item in dir(route):   # Unordered
+    #    print('{}={}'.format(item, getattr(route, item))) 
 
     print("path={}".format(route.path))
     print("name={}".format(route.name))
@@ -25,7 +25,7 @@ for route in ROUTES:
     print("handler_doc={}".format(route.handler_doc))
 
 
-import sys; sys.exit()
+
 
 # ############################################################################
 
@@ -33,13 +33,13 @@ import sys; sys.exit()
 
 
 # Show call logging
-from routes import get_contests_handler, get_contest_handler
+from routes import ROUTES
 import gate_keeper
 from werkzeug.datastructures import MultiDict
 from werkzeug.test import EnvironBuilder
 from werkzeug.wrappers import Request
 
-def build_request_obj(query_strings=None):
+def build_request_obj(query_strings):
     builder = EnvironBuilder(query_strings)      # query_string=)
     env = builder.get_environ()
     request = Request(env)
@@ -48,7 +48,11 @@ def build_request_obj(query_strings=None):
 
 
 # GET contests
-request = build_request_obj()
+request = build_request_obj("foo")
+
+import pdb; pdb.set_trace()
+import sys; sys.exit()
+
 ret = get_contests_handler(request)
 
 
