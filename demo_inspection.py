@@ -50,11 +50,15 @@ def build_request_obj(query_strings):
 # GET contests
 request = build_request_obj("foo")
 
+contests_router = ROUTES[0]
+contest_router = ROUTES[1]
+
+
+ret = contests_router(request)
+
+
 import pdb; pdb.set_trace()
 import sys; sys.exit()
-
-ret = get_contests_handler(request)
-
 
 # GET contest
 fixture_list_id = 1

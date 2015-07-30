@@ -121,8 +121,15 @@ class Route(object):
             self.pre_handler_hook(call_info)
 
         # set params
-        path_params = self.path_handler(path_params)
-        query_params = self.make_query_model(request)
+        if self.path_handler:
+            path_params = self.path_handler(request, path_params)
+        else:
+            path_params = None
+
+        if self.query_handler:
+            query_params = self.query_handler(request, path_params)
+        else:
+            query_params = None
 
         # Maybe wrap clients
         client_call_infos = []
@@ -132,6 +139,8 @@ class Route(object):
             )
         else:
             clients = self.raw_clients
+
+        import pdb; pdb.set_trace()
 
         # Service the request.
         error = None
@@ -227,7 +236,7 @@ def wrap_clients(clients, call_array, client_methods_gatekeeper, lru_cache):
     return clients
 
 
-def clients_wrapper(clients, call_store, client_methods_gatekeeper):
+def clients_wrapper(clients, call_store, client_methods_gatekeeper, lru_cache):
     # Save the client calls.
     assert isinstance(call_store, list)
 
@@ -238,8 +247,10 @@ def clients_wrapper(clients, call_store, client_methods_gatekeeper):
 
             for method in inspect.getmembers(client, inspect.ismethod):
                 if not method.__name__.startwith('_'):
-                    lru_cached_method = functools.lru_cache(method)
-                    new_method = client_meth_wrapper(lru_cached_method)
+                    if lru_cache:
+                        new_method = functools.lru_cache(method)
+                    if client_methods_gatekeeper:
+                        new_method = client_meth_wrapper(new_method)
                     self.method_proxies[method.__name__] = new_method
 
         def __getattr__(self, thing):
