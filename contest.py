@@ -12,7 +12,7 @@ def foo_handler(request, path_params):
     return 'defaultvalue'
 
 
-def ContestsHandler(request, path_params, query_params, clients, documenter):
+def ContestsHandler(clients, request, path_params, query_params, documenter):
     """
     The contests collection resource provides lists of contests filtered by
     various parameters.  If no fixture_list is specfied then only pinned contests
@@ -35,11 +35,12 @@ def ContestsHandler(request, path_params, query_params, clients, documenter):
         Vary: Accept
         Content-Type: application/json
     """
-
+    print(clients)
     contests_manager = FakeManager(clients)
 
-    print("ContestsHandler: FIRST CALL get_contests")
+    print("ContestsHandler: FIRST CALL get_contests", contests_manager)
     contests, fixture_lists = contests_manager.get_contests()
+    print("erm")
 
     data = {
         'contests': contests,

@@ -1,5 +1,5 @@
 
-def FakeManager(object):
+class FakeManager(object):
     def __init__(self, clients):
         self._clients = clients()
 
