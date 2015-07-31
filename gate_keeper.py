@@ -37,7 +37,7 @@ class Route(object):
 
         lru_caching:
             For the duration of a request any external client method
-                that is called twice will only be called once and the result reused.
+                that is called twice with the same args will only be called once and the result reused.
 
         debug mode support:
             For each request capture:
