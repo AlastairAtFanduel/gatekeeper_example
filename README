@@ -1,33 +1,40 @@
-Done:
+# Done
 
-Can inspect routes and pull out:
+## Inspect routes
     * path
     * name
     * verb
     * path params
     * query params
-    * client depenencies
+    * client dependencies
     * status codes returned
     * handler doc
     * document doc
 
-Request call stacks:  Every request in debug mode records client methods called params etc.
+## Request call stacks.  
+    Each request given a call stack, records what clients get called
 
-Automatic lru_caching of client calls
+## DEBUG mode
+    When run with python -O
+    status code and client dependencies validation
+
+## lru_caching
+    Automatic lru_caching of client calls
 
     
 
-ToDo:
+# ToDo
 
-* itegrate with sphinx
+* integrate with sphinx
 * graphvis generate call graphs with params
 * more work todo on param docers
-* more work todo on docer heirary
-* timers
+* more work todo on docer with hierarchies
+* timer, time spent in each client call, per request with recorded params.
 * Check responses instead of just status codes
 * Werkzeug could populate path_handler
 
-inpsect
+
+Notes
 generate docs
 examples https://pythonhosted.org/sphinxcontrib-programoutput/
 docs from better strings  https://pypi.python.org/pypi/sphinxcontrib-napoleon
