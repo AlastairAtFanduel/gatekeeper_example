@@ -1,0 +1,161 @@
+['allowed_client_methods', 'allowed_status_codes', 'documents_doc', 'handler_doc', 'name', 'path', 'path_params', 'query_params', 'verb']
+--------------------------------------------------------------------------------
+path=/contests
+name=/contests
+verb=GET
+path_params=[]
+query_params=[]
+allowed_client_methods=['FakeSportDataC3pyo.sport_data_java_call_1', 'FakeGameDataC3pyo.game_data_java_call_2']
+allowed_status_codes=('422', '402', '201')
+documents_doc=
+    .. sourcecode:: json
+
+        "_meta": {
+            "_primary_document": "contests",
+            "count": self.contest_count,
+            "entry_fees": [
+                0, 1, 2, 5, 10, 25, 50, 109, 270, 535, 1000, 1065, 5300,
+                10600, 50000
+            ]
+        },
+        "contests": [OpenContestSubDocument],
+        "contest_types": [ContestTypeSubDocument],
+        "contest_sub_types": [ContestSubTypeSubDocument],
+        "fixture_lists": [FixtureListSubDocument],
+        "users": [UserSubDocument]
+    
+handler_doc=
+    The contests collection resource provides lists of contests filtered by
+    various parameters.  If no fixture_list is specfied then only pinned contests
+    over all upcoming fixture_lists will be provided (in this case
+    fixture_lists will be be an empty list).
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        GET /contests?fixture_list=8010
+        Host: api.fanduel.com
+        Accept: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Vary: Accept
+        Content-Type: application/json
+    
+--------------------------------------------------------------------------------
+path=/contests/<numeric_string:fixture_list_id>-<numeric_string:contest_id>
+name=/contest
+verb=GET
+path_params=('fixture_list_id', 'contest_id')
+query_params=['foo']
+allowed_client_methods=['FakeSportDataC3pyo.sport_data_java_call_2']
+allowed_status_codes=('422', '402', '201')
+documents_doc=
+    .. sourcecode:: json
+
+        "_meta": {
+            "_primary_document": "contests"
+        },
+        "contests": [self._transform_contest(), ],
+        "fixture_lists": [self._transform_fixture_list(), ],
+        "fixtures": [
+            self._transform_fixture(f) for f in self.fixtures
+        ],
+        "teams": [
+            self._transform_team(t) for t in self.teams
+        ],
+        "users": []
+    
+handler_doc=
+    The individual contest resource provides detailed information about the
+    contest, rules, associated fixtures and prize structures.
+
+    **Authentication required**: No
+
+    Responds with information about a contest, including sport, name, salary
+    cap, size, entry count, entry fee, total prize amount, prize breakdown,
+    fixtures, rules, start time.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        GET /contests/343434-2914582 HTTP/1.1
+        Host: api.fanduel.com
+        Accept: application/json
+    
+================================================================================
+================================================================================
+================================================================================
+
+BASIC CALL LOGGING
+{}
+FakeManager.get_contests: calling sport_data_java_call_1
+RAW call FakeSportDataC3pyo.java_call_1
+FakeManager.get_contests: calling sport_data_java_call_1
+FakeManager.get_contests: calling sport_data_java_call_2
+('MethodGateKeeper: Illegal call to ', <bound method FakeSportDataC3pyo.sport_data_java_call_2 of <clients.FakeSportDataC3pyo object at 0x7f26307b0f90>>)
+RAW call FakeSportDataC3pyo.java_call_2
+FakeManager.get_contests: calling game_data_java_call_2
+RAW call FakeGameDataC3pyo.java_call_2
+('StatusCodeGateKeeper: Illegal status code', '200 OK')
+******************************************************************************** CALL LOGGER
+	 Handler of name=ContestsHandler was called with args None, query_params=None
+	 Client calls
+		 -> client call sport_data_java_call_1
+		 -> client call sport_data_java_call_1
+		 -> client call sport_data_java_call_2
+		 -> client call game_data_java_call_2
+================================================================================
+================================================================================
+================================================================================
+
+CALL LOGGING WITH PARAMS
+{'foo': 'True'}
+('meeoop', <Request 'http://localhost/' [GET]>, (1, 2))
+('ContestHandler: ', 1, 2, 'True')
+ContestHandler: FIRST CALL get_contest
+FakeManager.get_contest: calling get_contest
+RAW call FakeSportDataC3pyo.java_call_2
+ContestHandler: SECOND CALL get_contest
+FakeManager.get_contest: calling get_contest
+ContestHandler: THIRD CALL call_unexpected_thing
+('MethodGateKeeper: Illegal call to ', <bound method FakeGameDataC3pyo.game_data_java_call_1 of <clients.FakeGameDataC3pyo object at 0x7f26307b0e90>>)
+RAW call FakeGameDataC3pyo.java_call_1
+('StatusCodeGateKeeper: Illegal status code', '200 OK')
+******************************************************************************** CALL LOGGER
+	 Handler of name=ContestHandler was called with args path_handler(fixture_list_id=1, contest_id=2), query_params=query_handler(foo='True')
+	 Client calls
+		 -> client call sport_data_java_call_2
+		 -> client call sport_data_java_call_2
+		 -> client call game_data_java_call_1
+================================================================================
+================================================================================
+================================================================================
+
+CALL LOGGING WITH PARAMS2
+{'foo': 'False'}
+('meeoop', <Request 'http://localhost/' [GET]>, (1, 2))
+('ContestHandler: ', 1, 2, 'False')
+FakeManager.get_contests: calling sport_data_java_call_1
+('MethodGateKeeper: Illegal call to ', <bound method FakeSportDataC3pyo.sport_data_java_call_1 of <clients.FakeSportDataC3pyo object at 0x7f26307b0f90>>)
+RAW call FakeSportDataC3pyo.java_call_1
+FakeManager.get_contests: calling sport_data_java_call_1
+('MethodGateKeeper: Illegal call to ', <bound method FakeSportDataC3pyo.sport_data_java_call_1 of <clients.FakeSportDataC3pyo object at 0x7f26307b0f90>>)
+FakeManager.get_contests: calling sport_data_java_call_2
+RAW call FakeSportDataC3pyo.java_call_2
+FakeManager.get_contests: calling game_data_java_call_2
+('MethodGateKeeper: Illegal call to ', <bound method FakeGameDataC3pyo.game_data_java_call_2 of <clients.FakeGameDataC3pyo object at 0x7f26307b0e90>>)
+RAW call FakeGameDataC3pyo.java_call_2
+('StatusCodeGateKeeper: Illegal status code', '200 OK')
+******************************************************************************** CALL LOGGER
+	 Handler of name=ContestHandler was called with args path_handler(fixture_list_id=1, contest_id=2), query_params=query_handler(foo='False')
+	 Client calls
+		 -> client call sport_data_java_call_1
+		 -> client call sport_data_java_call_1
+		 -> client call sport_data_java_call_2
+		 -> client call game_data_java_call_2
