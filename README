@@ -1,9 +1,31 @@
+Done:
 
-# ToDo:
+Can inspect routes and pull out:
+    * path
+    * name
+    * verb
+    * path params
+    * query params
+    * client depenencies
+    * status codes returned
+    * handler doc
+    * document doc
 
-# Check responses instead of just status codes
-# Python2 doesnas have a full qual name for allowed_client_methods, name magic
-# Werkzeug could populate path_handler
+Request call stacks:  Every request in debug mode records client methods called params etc.
+
+Automatic lru_caching of client calls
+
+    
+
+ToDo:
+
+* itegrate with sphinx
+* graphvis generate call graphs with params
+* more work todo on param docers
+* more work todo on docer heirary
+* timers
+* Check responses instead of just status codes
+* Werkzeug could populate path_handler
 
 inpsect
 generate docs
